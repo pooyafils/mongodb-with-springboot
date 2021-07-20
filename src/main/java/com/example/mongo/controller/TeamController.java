@@ -4,6 +4,7 @@ import com.example.mongo.model.Player;
 import com.example.mongo.model.Team;
 import com.example.mongo.repository.PlayerRepository;
 import com.example.mongo.repository.TeamRepository;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,12 +15,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-public class SoccerController {
+public class TeamController {
     TeamRepository teamRepository;
 
     PlayerRepository playerRepository;
 
-    public SoccerController(TeamRepository teamRepository, PlayerRepository playerRepository) {
+    public TeamController(TeamRepository teamRepository, PlayerRepository playerRepository) {
         this.teamRepository = teamRepository;
         this.playerRepository = playerRepository;
     }
@@ -31,12 +32,7 @@ public class SoccerController {
         return new ResponseEntity<>(teamCreated, HttpStatus.CREATED);
     }
 
-    @PostMapping("/players")
-    public ResponseEntity<Player> createPlayer(@RequestBody Player createPlayerDto) {
-        Player playerCreated = playerRepository.save(createPlayerDto);
 
-        return new ResponseEntity<>(playerCreated, HttpStatus.CREATED);
-    }
     @PutMapping("/teams/{id}")
     public ResponseEntity<Team> updateTeam(@PathVariable String id, @RequestBody Team createTeamDto) {
         Optional<Team> optionalTeam = teamRepository.findById(id);
@@ -92,5 +88,15 @@ public ResponseEntity<Team> addPlayersToTeam(@PathVariable String id, @RequestBo
     Team teamUpdated =  teamRepository.save(teamToUpdate);
 
     return new ResponseEntity<>(teamUpdated, HttpStatus.OK);
+}
+@GetMapping
+    public  ResponseEntity<List<Team>> getAllTeams(){
+        return ResponseEntity.ok(teamRepository.findAll());
+}
+@GetMapping("/{id}")
+    public ResponseEntity findById(@PathVariable String id){
+        Optional<Team> ids=teamRepository.findById(id);
+
+        return ResponseEntity.ok(ids);
 }
 }
